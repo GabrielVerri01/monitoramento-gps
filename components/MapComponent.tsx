@@ -4,21 +4,25 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// 1. Tipando a estrutura do nosso veículo
+// Estrutura do veículo
 export interface Veiculo {
   id: string;
   nome: string;
   setor: string;
+  aparelhos: string[];
+  velocidade: number[];
+  placa: string[];
   lat: number;
   lng: number;
 }
 
 interface MapComponentProps {
   veiculos: Veiculo[];
-  setoresAtivos: string[];
+  setoresAtivos: string[];  //setores ativos
+  aparelhosAtivos: string[]; // Adicionando a prop para aparelhos ativos
 }
 
-export default function MapComponent({ veiculos, setoresAtivos }: MapComponentProps) {
+export default function MapComponent({ veiculos, setoresAtivos, aparelhosAtivos }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<L.Map | null>(null);
   
@@ -30,7 +34,7 @@ export default function MapComponent({ veiculos, setoresAtivos }: MapComponentPr
   useEffect(() => {
     if (!mapRef.current || leafletMapRef.current) return;
 
-    // Inicializa o mapa focado em uma coordenada inicial
+    // mapa com cordenada inicial
     const mapa = L.map(mapRef.current).setView([-23.55052, -46.633308], 13);
     leafletMapRef.current = mapa;
 
@@ -69,9 +73,23 @@ export default function MapComponent({ veiculos, setoresAtivos }: MapComponentPr
 
     // 2. Processa os veículos que vieram da API/State
     veiculos.forEach((carro) => {
-      // Se o setor do carro não está ativo no filtro, não fazemos nada
-      if (!setoresAtivos.includes(carro.setor)) return;
+      const setorAtivo = setoresAtivos.includes(carro.setor);
+      const aparelhoAtivo = carro.aparelhos.some(aparelho => aparelhosAtivos.includes(aparelho));
+      
+      const deveMostrar = setorAtivo && aparelhoAtivo;
 
+      const marcador = marcadoresRef.current[carro.id];
+      const camada = camadasRef.current[carro.setor];
+      if (!deveMostrar) {
+        if (
+          marcador &&
+          camada?.hasLayer(marcador)
+        ) {
+          camada.removeLayer(marcador);
+        }
+
+        return;
+      }
       // Se a camada daquele setor ainda não existe, criamos ela
       if (!camadasRef.current[carro.setor]) {
         camadasRef.current[carro.setor] = L.layerGroup().addTo(mapa);
@@ -80,19 +98,28 @@ export default function MapComponent({ veiculos, setoresAtivos }: MapComponentPr
       const camadaDoSetor = camadasRef.current[carro.setor];
 
       // Se o marcador do carro já existe, apenas atualizamos a posição (Tempo Real!)
-      if (marcadoresRef.current[carro.id]) {
-        marcadoresRef.current[carro.id].setLatLng([carro.lat, carro.lng]);
+      const marcadorExistente = marcadoresRef.current[carro.id];
+      if (marcadorExistente) {
+        marcadorExistente.setLatLng([carro.lat, carro.lng]);
+
+        if (!mapa.hasLayer(marcadorExistente)) {
+          marcadorExistente.addTo(camadaDoSetor);
+        }
       } else {
         // Se é um carro novo, cria o pino e o vincula à camada do setor correto
         const novoMarcador = L.marker([carro.lat, carro.lng]).bindPopup(
-          `<b>${carro.nome}</b><br>Setor: ${carro.setor}`
+          `<b>${carro.nome}</b>
+          <br>Setor: ${carro.setor}
+          <br>Aparelhos: ${carro.aparelhos.join(", ")}
+          <br>Velocidade: ${carro.velocidade} km/h
+          <br>Placa: ${carro.placa}`
         );
 
         marcadoresRef.current[carro.id] = novoMarcador;
         novoMarcador.addTo(camadaDoSetor);
       }
     });
-  }, [veiculos, setoresAtivos]);
+  }, [veiculos, setoresAtivos, aparelhosAtivos]);
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 }
