@@ -18,6 +18,7 @@ export default function LoginPage(){
     });
     const data = await response.json();
     if (response.ok) {
+      console.log(`usuario: ${data.usuario}`);
       alert("Login realizado com sucesso!");
       router.push("/paginas/mapa");
     } else {

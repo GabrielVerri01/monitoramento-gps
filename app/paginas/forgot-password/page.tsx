@@ -15,3 +15,5 @@ export default function ForgotPasswordPage() {
         </main>
     )
 }
+
+// POR ENQUANTO DESNECESSARIO, O SISTEMA É INTERNO

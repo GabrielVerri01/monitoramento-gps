@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import MapComponent, { Veiculo } from "@/components/MapComponent";
+import MapComponent,{ Veiculo } from "@/app/paginas/mapa/_components/MapComponent";
 import { useTheme } from "next-themes";
 
 const MapComponentContainer = dynamic(
-  () => import("@/components/MapComponent"),
+  () => import("@/app/paginas/mapa/_components/MapComponent"),
   { ssr: false }
 );
 
@@ -17,6 +17,11 @@ export default function MonitoramentoPage() {
     async function carregarDados() {
       const respostaVeiculos = await fetch("/api/veiculos");
       const listaVeiculos = await respostaVeiculos.json();
+
+      if (!respostaVeiculos.ok) {
+        console.error("Erro ao buscar veículos:", respostaVeiculos.status, listaVeiculos);
+        return;
+      }
 
       const respostaAparelhos = await fetch("/api/aparelhos");
       const listaAparelhos = await respostaAparelhos.json();
@@ -39,33 +44,39 @@ export default function MonitoramentoPage() {
 
 
 
-  const [setoresAtivos, setSetoresAtivos] = useState<string[]>(["Logistica", "Vendas"]);
+  const [setoresAtivos, setSetoresAtivos] = useState<string[]>(["Logistica", "Vendas", "SEMUSC", "SEMED", "SMTT", "BLITZ", "SEMAPA", "SAMU"]);
   const [aparelhosAtivos, setAparelhosAtivos] = useState<string[]>(["GPS", "RÁDIO"]);
   // const [sidebarAberto, setSidebarAberto] = useState(false);   sidebar abria e fechava 
 
-  useEffect(() => {
-    const movimentosPorCarro: Record<string, { lat: number; lng: number }> = {
-      "1": { lat: 0.0003, lng: 0.0003 },
-      "2": { lat: -0.0002, lng: 0.00025 },
-      "3": { lat: 0.00025, lng: -0.0002 },
-    };
+  // useEffect(() => {
+  //   const movimentosPorCarro: Record<string, { lat: number; lng: number }> = {
+  //     "1": { lat: 0.0003, lng: 0.0003 },
+  //     "2": { lat: -0.0002, lng: 0.00025 },
+  //     "3": { lat: 0.00025, lng: -0.0002 },
+  //     "4": { lat: -0.0003, lng: -0.0003 },
+  //     "5": { lat: 0.0002, lng: 0.0002 },
+  //     "6": { lat: -0.00025, lng: 0.0003 },
+  //     "7": { lat: 0.0003, lng: -0.00025 },
+  //     "8": { lat: -0.0002, lng: -0.0002 },
+  //     "9": { lat: 0.00025, lng: 0.00025 },
+  //   };
 
-    const interval = setInterval(() => {
-      setVeiculos((listaAntiga) =>
-        listaAntiga.map((carro) => {
-          const movimento = movimentosPorCarro[carro.id] ?? { lat: 0.0002, lng: 0.0002 };
+  //   const interval = setInterval(() => {
+  //     setVeiculos((listaAntiga) =>
+  //       listaAntiga.map((carro) => {
+  //         const movimento = movimentosPorCarro[carro.id] ?? { lat: 0.0002, lng: 0.0002 };
 
-          return {
-            ...carro,
-            lat: carro.lat + movimento.lat,
-            lng: carro.lng + movimento.lng,
-          };
-        })
-      );
-    }, 2000);
+  //         return {
+  //           ...carro,
+  //           lat: carro.lat + movimento.lat,
+  //           lng: carro.lng + movimento.lng,
+  //         };
+  //       })
+  //     );
+  //   }, 2000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const handleCheckboxChange = (setor: string) => {
     setSetoresAtivos((antigos) =>
@@ -83,6 +94,12 @@ export default function MonitoramentoPage() {
         : [...antigos, aparelho]  //adiciona se nao estiver ativo
     );
   };
+
+  function handleLogout(){
+    console.log(`usuario: ${localStorage.getItem("usuario")}`);
+    localStorage.removeItem("usuario");
+    window.location.href = "/";
+  }
   
   return (
     <div className="relative h-screen w-full overflow-hidden bg-zinc-950">
@@ -93,8 +110,8 @@ export default function MonitoramentoPage() {
         <div className="mb-8">
           <div className="mb-6 flex items-center justify-between">
             <h1 className="text-2xl font-bold">Filtros</h1>
-            <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} type="button" className="rounded-md bg-zinc-200 px-3 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-300">
-              Mudar tema 
+            <button onClick={function() { handleLogout(); }} type="button" className="rounded-md bg-red-200 px-3 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-red-300">
+              Sair 
             </button>
           </div>
           <section>
@@ -128,6 +145,51 @@ export default function MonitoramentoPage() {
                   onChange={() => handleCheckboxChange("SEMUSC")}
                 />
                 <span className="text-sm font-medium bg-zinc-50 dark:bg-zinc-800 p-2 rounded-md">SEMUSC</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-zinc-900"
+                  checked={setoresAtivos.includes("SEMED")}
+                  onChange={() => handleCheckboxChange("SEMED")}
+                />
+                <span className="text-sm font-medium">SEMED</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-zinc-900"
+                  checked={setoresAtivos.includes("SMTT")}
+                  onChange={() => handleCheckboxChange("SMTT")}
+                />
+                <span className="text-sm font-medium">SMTT</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-zinc-900"
+                  checked={setoresAtivos.includes("BLITZ")}
+                  onChange={() => handleCheckboxChange("BLITZ")}
+                />
+                <span className="text-sm font-medium">BLITZ</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-zinc-900"
+                  checked={setoresAtivos.includes("SEMAPA")}
+                  onChange={() => handleCheckboxChange("SEMAPA")}
+                />
+                <span className="text-sm font-medium">SEMAPA</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-zinc-900"
+                  checked={setoresAtivos.includes("SAMU")}
+                  onChange={() => handleCheckboxChange("SAMU")}
+                />
+                <span className="text-sm font-medium">SAMU</span>
               </label>
             </div>
           </section>

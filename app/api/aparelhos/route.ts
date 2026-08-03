@@ -18,5 +18,33 @@ export async function GET() {
       veiculoId: "3",
       tipo: "RÁDIO",
     },
+    {
+      veiculoId: "4",
+      tipo: "GPS",
+    },
+    {
+      veiculoId: "5",
+      tipo: "RÁDIO",
+    },
+    {
+      veiculoId: "6",
+      tipo: "GPS",
+    },
+    {
+      veiculoId: "7",
+      tipo: "RÁDIO",
+    },
+    {
+      veiculoId: "7",
+      tipo: "GPS",
+    },
+    {
+      veiculoId: "8",
+      tipo: "RÁDIO",
+    },
+    {
+      veiculoId: "9",
+      tipo: "GPS",
+    }
   ]);
 }
