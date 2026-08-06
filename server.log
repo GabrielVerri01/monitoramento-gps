@@ -1,0 +1,277 @@
+
+> monitoramento-gps@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.200.65:3000
+- Environments: .env.local, .env
+✓ Ready in 486ms
+
+ GET /paginas/mapa 200 in 374ms (next.js: 163ms, application-code: 211ms)
+ GET /api/geduc/posicoes 200 in 1274ms (next.js: 122ms, application-code: 1151ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 35ms (next.js: 27ms, application-code: 8ms)
+ GET /api/aparelhos 200 in 29ms (next.js: 26ms, application-code: 3ms)
+ GET /paginas/mapa 200 in 40ms (next.js: 6ms, application-code: 34ms)
+ GET /paginas/mapa 200 in 36ms (next.js: 4ms, application-code: 33ms)
+ GET /api/geduc/posicoes 200 in 1046ms (next.js: 5ms, application-code: 1041ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 12ms (next.js: 4ms, application-code: 7ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1658µs, application-code: 3ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 11ms (next.js: 4ms, application-code: 7ms)
+ GET /api/geduc/posicoes 200 in 871ms (next.js: 2ms, application-code: 869ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 9ms (next.js: 4ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 5ms (next.js: 1270µs, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 1205ms (next.js: 3ms, application-code: 1202ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 14ms (next.js: 9ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 6ms (next.js: 2ms, application-code: 4ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 8ms (next.js: 3ms, application-code: 5ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 12ms (next.js: 2ms, application-code: 10ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 9ms (next.js: 2ms, application-code: 7ms)
+ GET /api/geduc/posicoes 200 in 1010ms (next.js: 3ms, application-code: 1007ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 7ms (next.js: 1628µs, application-code: 5ms)
+ GET /api/aparelhos 200 in 6ms (next.js: 3ms, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 1073ms (next.js: 4ms, application-code: 1069ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 8ms (next.js: 2ms, application-code: 6ms)
+ GET /api/aparelhos 200 in 7ms (next.js: 2ms, application-code: 5ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 9ms (next.js: 3ms, application-code: 6ms)
+ GET /api/geduc/posicoes 200 in 1037ms (next.js: 3ms, application-code: 1035ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 10ms (next.js: 2ms, application-code: 7ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1196µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 1062ms (next.js: 1569µs, application-code: 1060ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 7ms (next.js: 2ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1283µs, application-code: 3ms)
+ GET /paginas/mapa 200 in 50ms (next.js: 3ms, application-code: 47ms)
+ GET /api/geduc/posicoes 200 in 1055ms (next.js: 4ms, application-code: 1051ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 13ms (next.js: 4ms, application-code: 9ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1434µs, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 1598ms (next.js: 5ms, application-code: 1593ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 6ms (next.js: 1286µs, application-code: 5ms)
+ GET /api/aparelhos 200 in 5ms (next.js: 2ms, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 860ms (next.js: 3ms, application-code: 858ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 6ms (next.js: 1463µs, application-code: 5ms)
+ GET /api/aparelhos 200 in 5ms (next.js: 1232µs, application-code: 4ms)
+ GET /api/geduc/posicoes 200 in 1513ms (next.js: 2ms, application-code: 1511ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 8ms (next.js: 4ms, application-code: 4ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1190µs, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 1188ms (next.js: 2ms, application-code: 1185ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 9ms (next.js: 4ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 3ms (next.js: 1170µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 862ms (next.js: 3ms, application-code: 859ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 6ms (next.js: 1291µs, application-code: 4ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1232µs, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 938ms (next.js: 3ms, application-code: 936ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 69, locais: 4, geduc: 65 }
+ GET /api/veiculos 200 in 8ms (next.js: 3ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1216µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 857ms (next.js: 4ms, application-code: 852ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 9ms (next.js: 4ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 3ms (next.js: 1248µs, application-code: 1942µs)
+ GET /paginas/mapa 200 in 34ms (next.js: 4ms, application-code: 31ms)
+ GET /api/geduc/posicoes 200 in 363ms (next.js: 4ms, application-code: 359ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 9ms (next.js: 2ms, application-code: 7ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1856µs, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 868ms (next.js: 7ms, application-code: 861ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 8ms (next.js: 1287µs, application-code: 6ms)
+ GET /api/aparelhos 200 in 3ms (next.js: 1273µs, application-code: 2ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 10ms (next.js: 2ms, application-code: 8ms)
+ GET /api/geduc/posicoes 200 in 1200ms (next.js: 3ms, application-code: 1198ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 7ms (next.js: 1597µs, application-code: 5ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1696µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 1097ms (next.js: 2ms, application-code: 1095ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 13ms (next.js: 6ms, application-code: 7ms)
+ GET /api/aparelhos 200 in 3ms (next.js: 1288µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 1117ms (next.js: 4ms, application-code: 1113ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 7ms (next.js: 3ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1397µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 1068ms (next.js: 3ms, application-code: 1065ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 7ms (next.js: 1875µs, application-code: 5ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1899µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 1061ms (next.js: 2ms, application-code: 1059ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 8ms (next.js: 3ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 6ms (next.js: 3ms, application-code: 4ms)
+ GET /api/geduc/posicoes 200 in 1085ms (next.js: 4ms, application-code: 1081ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 10ms (next.js: 1925µs, application-code: 8ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1289µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 841ms (next.js: 5ms, application-code: 836ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 6ms (next.js: 1226µs, application-code: 4ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1862µs, application-code: 3ms)
+ GET /api/geduc/posicoes 200 in 843ms (next.js: 3ms, application-code: 840ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 6ms (next.js: 1648µs, application-code: 4ms)
+ GET /api/aparelhos 200 in 3ms (next.js: 1181µs, application-code: 2ms)
+ GET /api/geduc/posicoes 200 in 1190ms (next.js: 4ms, application-code: 1186ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 10ms (next.js: 5ms, application-code: 5ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1898µs, application-code: 2ms)
+ GET /paginas/mapa 200 in 78ms (next.js: 9ms, application-code: 69ms)
+ GET /api/geduc/posicoes 200 in 1023ms (next.js: 3ms, application-code: 1020ms)
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/veiculos
+[GET] http://apiv1.multiportal.com.br:9870/api/v1/posicoes/ultimaPosicao?limite=100
+Multiportal não disponível: MULTIPORTAL_TOKEN não configurado
+Usando veículos do banco de dados local
+GET /api/veiculos { filtros: 'nenhum', totalResultados: 65, locais: 0, geduc: 65 }
+ GET /api/veiculos 200 in 11ms (next.js: 3ms, application-code: 8ms)
+ GET /api/aparelhos 200 in 4ms (next.js: 1231µs, application-code: 2ms)
+[?25h

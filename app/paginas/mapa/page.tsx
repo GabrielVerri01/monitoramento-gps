@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import MapComponent,{ Veiculo } from "@/app/paginas/mapa/_components/MapComponent";
 import { useTheme } from "next-themes";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const MapComponentContainer = dynamic(
   () => import("@/app/paginas/mapa/_components/MapComponent"),
@@ -13,8 +14,17 @@ const MapComponentContainer = dynamic(
 export default function MonitoramentoPage() {
   const { resolvedTheme, setTheme } = useTheme();
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
-  useEffect(() => {
-    async function carregarDados() {
+
+  async function carregarDados() {
+    try {
+      const agora = new Date().toLocaleTimeString('pt-BR');
+      console.log(`[${agora}] 🔄 Atualizando posições dos veículos...`);
+
+      // Sincronizar dados GEDUC primeiro
+      await fetch("/api/geduc/posicoes").catch(() => {
+        // Ignorar erros de GEDUC se não estiver configurado
+      });
+
       const respostaVeiculos = await fetch("/api/veiculos");
       const listaVeiculos = await respostaVeiculos.json();
 
@@ -26,25 +36,45 @@ export default function MonitoramentoPage() {
       const respostaAparelhos = await fetch("/api/aparelhos");
       const listaAparelhos = await respostaAparelhos.json();
 
-      const resultado = listaVeiculos.map((veiculo: any) => ({
-        ...veiculo,
-        aparelhos: listaAparelhos
+      const resultado = listaVeiculos.map((veiculo: any) => {
+        // Se veículo já tem aparelhos (vindo da API GEDUC), mantém
+        if (veiculo.aparelhos && veiculo.aparelhos.length > 0) {
+          return veiculo;
+        }
+
+        // Senão, busca na tabela de aparelhos
+        const aparelhosVeiculo = listaAparelhos
           .filter((a: any) => a.veiculoId === veiculo.id)
-          .map((a: any) => a.tipo),
-      }));
+          .map((a: any) => a.tipo);
+
+        return {
+          ...veiculo,
+          aparelhos: aparelhosVeiculo.length > 0 ? aparelhosVeiculo : ["GPS"],
+        };
+      });
 
       setVeiculos(resultado);
+      console.log(`[${agora}] ✅ ${resultado.length} veículos carregados (próxima atualização em 60 segundos)`);
+    } catch (error) {
+      console.error("Erro ao carregar dados:", error);
     }
+  }
 
+  useEffect(() => {
     carregarDados();
-}, []);
+
+    // intervalo de 45 segundos para atualizacao
+    const interval = setInterval(carregarDados, 45000);
+
+    return () => clearInterval(interval);
+  }, []);
     // { id: "1", nome: "Carro 1", setor: "Logistica", aparelhos: ["GPS", "RÁDIO"], lat: -23.5505, lng: -46.6333 },
     // { id: "2", nome: "Carro 2", setor: "Logistica", aparelhos: ["GPS"], lat: -23.558, lng: -46.641 },
     // { id: "3", nome: "Carro 3", setor: "Vendas", aparelhos: ["RÁDIO"], lat: -23.542, lng: -46.622 },
 
 
 
-  const [setoresAtivos, setSetoresAtivos] = useState<string[]>(["Logistica", "Vendas", "SEMUSC", "SEMED", "SMTT", "BLITZ", "SEMAPA", "SAMU"]);
+  const [setoresAtivos, setSetoresAtivos] = useState<string[]>(["Logistica", "Vendas", "SEMUSC", "SEMED", "SMTT", "BLITZ", "SEMAPA", "SAMU", "GEDUC"]);
   const [aparelhosAtivos, setAparelhosAtivos] = useState<string[]>(["GPS", "RÁDIO"]);
   // const [sidebarAberto, setSidebarAberto] = useState(false);   sidebar abria e fechava 
 
@@ -110,8 +140,9 @@ export default function MonitoramentoPage() {
         <div className="mb-8">
           <div className="mb-6 flex items-center justify-between">
             <h1 className="text-2xl font-bold">Filtros</h1>
-            <button onClick={function() { handleLogout(); }} type="button" className="rounded-md bg-red-200 px-3 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-red-300">
-              Sair 
+            <button onClick={function() { handleLogout(); }} type="button" className="rounded-md bg-red-200 px-3 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-red-300"> 
+              <FaSignOutAlt className="inline-block mr-2" />
+              Sair
             </button>
           </div>
           <section>
@@ -190,6 +221,15 @@ export default function MonitoramentoPage() {
                   onChange={() => handleCheckboxChange("SAMU")}
                 />
                 <span className="text-sm font-medium">SAMU</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-zinc-900"
+                  checked={setoresAtivos.includes("GEDUC")}
+                  onChange={() => handleCheckboxChange("GEDUC")}
+                />
+                <span className="text-sm font-medium">GEDUC (Transporte Escolar)</span>
               </label>
             </div>
           </section>

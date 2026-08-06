@@ -1,5 +1,88 @@
 import { NextResponse } from "next/server";
 import { listarVeiculosComPosicao } from "@/app/lib/gps/multiportal";
+import Database from "better-sqlite3";
+import path from "path";
+
+async function buscarVeiculosDoMultiportal(filtros?: Record<string, any>) {
+  try {
+    const veiculos = await listarVeiculosComPosicao(
+      Object.keys(filtros ?? {}).length > 0 ? filtros : undefined
+    );
+    return veiculos;
+  } catch (error) {
+    // Silenciosamente ignora erros de Multiportal (pode não estar configurado)
+    console.debug("Multiportal não disponível:", error instanceof Error ? error.message : String(error));
+    return null;
+  }
+}
+
+function buscarVeiculosLocais() {
+  try {
+    const dbPath = path.join(process.cwd(), "dev.db");
+    const db = new Database(dbPath);
+
+    const veiculos = db
+      .prepare(
+        `SELECT v.*,
+         GROUP_CONCAT(a.tipo, ',') as aparelhos_str
+         FROM "Veiculo" v
+         LEFT JOIN "Aparelho" a ON v.id = a.veiculoId
+         GROUP BY v.id`
+      )
+      .all();
+
+    db.close();
+
+    return veiculos.map((veiculo: any) => ({
+      id: veiculo.id,
+      nome: veiculo.nome,
+      setor: veiculo.setor,
+      aparelhos: veiculo.aparelhos_str
+        ? veiculo.aparelhos_str.split(",")
+        : [],
+      velocidade: veiculo.velocidade,
+      placa: veiculo.placa,
+      lat: veiculo.lat,
+      lng: veiculo.lng,
+    }));
+  } catch (error) {
+    console.error("Erro ao buscar veículos locais:", error);
+    return [];
+  }
+}
+
+function buscarVeiculosGEDUC() {
+  try {
+    const dbPath = path.join(process.cwd(), "dev.db");
+    const db = new Database(dbPath);
+
+    const veiculos = db
+      .prepare(
+        `SELECT * FROM "VeiculoGEDUC"
+         WHERE receivedAt IS NOT NULL
+         ORDER BY updatedAt DESC`
+      )
+      .all();
+
+    db.close();
+
+    return veiculos.map((veiculo: any) => ({
+      id: veiculo.id,
+      nome: veiculo.name,
+      setor: "GEDUC",
+      aparelhos: ["GPS"],
+      velocidade: Math.round(veiculo.speedKmh || 0),
+      placa: veiculo.vehicleId,
+      lat: veiculo.latitude,
+      lng: veiculo.longitude,
+      curso: veiculo.course,
+      ignicao: veiculo.ignition === 1,
+    }));
+  } catch (error) {
+    console.warn("Veículos GEDUC não disponíveis:", error instanceof Error ? error.message : "");
+    return [];
+  }
+}
 
 export async function GET(request: Request) {
   try {
@@ -25,18 +108,28 @@ export async function GET(request: Request) {
       filtros.veiculoId = searchParams.get("veiculoId");
     }
 
-    // Buscar veículos com filtros
-    const veiculos = await listarVeiculosComPosicao(
-      Object.keys(filtros).length > 0 ? filtros : undefined
-    );
+    // Tentar buscar do Multiportal primeiro
+    let veiculos = await buscarVeiculosDoMultiportal(filtros);
 
-    // Log para debug
+    // Se falhar, usar banco de dados local como fallback
+    if (!veiculos || veiculos.length === 0) {
+      console.log("Usando veículos do banco de dados local");
+      veiculos = buscarVeiculosLocais();
+    }
+
+    // Adicionar veículos GEDUC
+    const veiculosGEDUC = buscarVeiculosGEDUC();
+
+    const todoVeiculos = [...(veiculos || []), ...veiculosGEDUC];
+
     console.log("GET /api/veiculos", {
       filtros: Object.keys(filtros).length > 0 ? filtros : "nenhum",
-      totalResultados: veiculos.length,
+      totalResultados: todoVeiculos.length,
+      locais: veiculos?.length || 0,
+      geduc: veiculosGEDUC.length,
     });
 
-    return NextResponse.json(veiculos);
+    return NextResponse.json(todoVeiculos);
   } catch (error) {
     console.error("Erro ao buscar veículos:", error);
     return NextResponse.json(
