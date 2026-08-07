@@ -1,6 +1,7 @@
  "use client"
 import { useState } from "react";
 import Image from "next/image";
+import { HiKey } from "react-icons/hi2";
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
@@ -29,6 +30,7 @@ export default function ForgotPasswordPage() {
                         required
                     />
                     <button type="submit" className="login-button">
+                        <HiKey className="inline-block mr-2" />
                         Recuperar Senha
                     </button>
                     {message && <p className="login-message">{message}</p>}

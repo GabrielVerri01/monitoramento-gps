@@ -63,8 +63,8 @@ export default function MonitoramentoPage() {
   useEffect(() => {
     carregarDados();
 
-    // intervalo de 45 segundos para atualizacao
-    const interval = setInterval(carregarDados, 45000);
+    // intervalo de 30 a 60(recomendado) segundos para atualizacao
+    const interval = setInterval(carregarDados, 20000); //mudei para 20 segundos 
 
     return () => clearInterval(interval);
   }, []);
@@ -135,7 +135,7 @@ export default function MonitoramentoPage() {
     <div className="relative h-screen w-full overflow-hidden bg-zinc-950">
 
       <aside
-        className="absolute left-0 top-0 z-[1001] h-full w-[min(340px,88vw)] overflow-y-auto bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white p-6 shadow-2xl"
+        className="absolute left-0 top-0 z-[1001] h-full w-[min(300px,88vw)] overflow-y-auto bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white p-6 shadow-2xl"
       >
         <div className="mb-8">
           <div className="mb-6 flex items-center justify-between">
@@ -175,7 +175,7 @@ export default function MonitoramentoPage() {
                   checked={setoresAtivos.includes("SEMUSC")}
                   onChange={() => handleCheckboxChange("SEMUSC")}
                 />
-                <span className="text-sm font-medium bg-zinc-50 dark:bg-zinc-800 p-2 rounded-md">SEMUSC</span>
+                <span className="text-sm font-medium">SEMUSC</span>
               </label>
               <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
                 <input
@@ -234,7 +234,7 @@ export default function MonitoramentoPage() {
             </div>
           </section>
           <section className="mt-6">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500 bg-zinc-50 dark:bg-zinc-800 p-2 rounded-md">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
               APARELHOS
             </h2>
             <div className="space-y-3">

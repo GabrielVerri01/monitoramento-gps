@@ -107,7 +107,8 @@ body {
 
 /* Login Button - Multicolor Gradient */
 .login-button {
-  background: linear-gradient(135deg, #FFD700 0%, #00C853 50%, #0066CC 100%);
+  background: #0066CC;
+  /* background: linear-gradient(135deg, #FFD700 0%, #00C853 50%, #0066CC 100%); */
   color: white;
   border: none;
   padding: 14px 40px;
@@ -125,7 +126,8 @@ body {
 .login-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 102, 204, 0.35);
-  background: linear-gradient(135deg, #FFC107 0%, #00E676 50%, #1E90FF 100%);
+  background: #0066CC;
+  /* background: linear-gradient(135deg, #FFC107 0%, #00E676 50%, #1E90FF 100%); */
 }
 
 .login-button:active:not(:disabled) {
