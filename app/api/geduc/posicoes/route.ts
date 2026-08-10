@@ -81,7 +81,7 @@ export async function GET(request: Request) {
 
     const url = new URL(GEDUC_API_URL);
     // Sempre sincroniza tudo sem usar cursor
-    // Isso garante que sempre recebemos as posições mais recentes
+    // garante sempre posicoes mais recentes
 
     const response = await fetch(url.toString(), {
       headers: {

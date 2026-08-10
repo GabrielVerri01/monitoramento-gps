@@ -18,6 +18,7 @@ interface MapComponentProps {
   veiculos: Veiculo[];
   setoresAtivos: string[];
   aparelhosAtivos: string[];
+  onVeiculoSelecionado?: (veiculo: Veiculo) => void;
 }
 
 const CENTRO_INICIAL: [number, number] = [-2.5005, -44.2955];
@@ -47,11 +48,11 @@ function gerarIconeSimples(cor: string, simbolo: string): string {
 }
 
 function gerarIconePorSetor(setor: string, cor: string): string {
-  // GEDUC usa óculos
+  // GEDUC usa onibus feito no figma 
   if (setor === "GEDUC") {
     return gerarIconeOnibus(cor);
   }
-  // Outros setores usam ícone simples
+  // por enquanto icone simples para outros setores
   return gerarIconeSimples(cor, setor);
 }
 
@@ -70,18 +71,22 @@ function montarPopup(carro: Veiculo): string {
   const aparelhos = (carro.aparelhos || ["GPS"]).join(", ");
   const velocidade = carro.velocidade || 0;
   const placa = carro.placa || carro.id;
+  // const curso = carro.curso !== undefined ? `Curso: ${carro.curso}°` : "Curso: N/A";  CASO EU QUEIRA A DIRECAO
 
   return `<b>${carro.nome}</b>
     <br>Setor: ${carro.setor}
     <br>Aparelhos: ${aparelhos}
     <br>Velocidade: ${velocidade} km/h
-    <br>Placa: ${placa}`;
+    <br>Placa: ${placa}
+    `;
+    // CASO EU QUEIRA A DIRECAO devo adiconar <br>${curso} 
 }
 
 export default function MapComponent({
   veiculos,
   setoresAtivos,
   aparelhosAtivos,
+  onVeiculoSelecionado,
 }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any | null>(null);
@@ -92,6 +97,7 @@ export default function MapComponent({
   const rastrosRef = useRef<{ [id: string]: Array<[number, number]> }>({});
   const polylinesRef = useRef<any | null>(null);
   const veiculoSelecionadoRef = useRef<string | null>(null);
+  const veiculosDentroCirculoRef = useRef<Set<string>>(new Set());
 
   // Carrega Leaflet apenas no cliente
   useEffect(() => {
@@ -114,9 +120,30 @@ export default function MapComponent({
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(mapa);
 
+    // function montarPopupDeArea(lat: number, lng: number, veiculosDentro: Veiculo[]): string {
+    //   let conteudo = `<b>🚗 Veículos na área (${veiculosDentro.length}):</b><br><br>`;
+    //   veiculosDentro.forEach(v => {
+    //     conteudo += `<b>${v.nome}</b><br>`;
+    //     conteudo += `Setor: ${v.setor}<br>`;
+    //     conteudo += `Velocidade: ${v.velocidade || 0} km/h<br>`;
+    //     conteudo += `Placa: ${v.placa || v.id}<br><br>`;
+    //   });
+    //   return `
+    //     <main>
+    //       <div className="relative h-screen w-full overflow-hidden bg-zinc-950">
+    //         <aside className="absolute right-0 top-0 z-[1001] h-full w-[min(230px,88vw)] overflow-y-auto bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white p-6 shadow-2xl"
+    //         >
+    //           ${conteudo}
+    //         </aside>
+    //       </div>
+    //     </main>
+    //   `;
+    // }
+
     // Adiciona evento de clique no mapa para desenhar círculo em qualquer lugar
     mapa.on("click", (e: any) => {
       desenharCirculo(e.latlng.lat, e.latlng.lng, mapa);
+      // montarPopupDeArea(e.latlng.lat, e.latlng.lng, []); // Inicialmente vazio, será atualizado em verificarVeiculosDentroCirculo
     });
 
     return () => {
@@ -153,45 +180,57 @@ export default function MapComponent({
 
   function verificarVeiculosDentroCirculo(latCirculo: number, lngCirculo: number, raio: number, mapa: any) {
     const veiculosDentro: any[] = [];
+    const idsVerificados = new Set<string>();
 
     Object.entries(marcadoresRef.current).forEach(([id, marcador]) => {
       const posicaoMarcador = marcador.getLatLng();
       const distancia = calcularDistancia(latCirculo, lngCirculo, posicaoMarcador.lat, posicaoMarcador.lng);
 
-    
       if (distancia <= raio) {
         const veiculo = veiculos.find(v => v.id === id);
         if (veiculo) {
           veiculosDentro.push(veiculo);
+          idsVerificados.add(id);
         }
       }
-      // SE TA FORA NAO FAZ NADA 
     });
 
-    // Mostrar popup com veículos encontrados
-    if (veiculosDentro.length > 0) {
-      mostrarPopupVeiculosDentro(latCirculo, lngCirculo, veiculosDentro, mapa);
-    }
+    // Armazena IDs dos veículos dentro do círculo
+    veiculosDentroCirculoRef.current = idsVerificados;
   }
 
   // Mostra popup com informações dos veículos encontrados
-  function mostrarPopupVeiculosDentro(lat: number, lng: number, veiculosList: Veiculo[], mapa: any) {
-    const L = Lref.current;
-    if (!L) return;
+  // function mostrarPopupVeiculosDentro(lat: number, lng: number, veiculosList: Veiculo[], mapa: any) {
+  //   const L = Lref.current;
+  //   if (!L) return;
 
-    let conteudo = `<b>🚗 Veículos na área (${veiculosList.length}):</b><br><br>`;
-    veiculosList.forEach(v => {
-      conteudo += `<b>${v.nome}</b><br>`;
-      conteudo += `Setor: ${v.setor}<br>`;
-      conteudo += `Velocidade: ${v.velocidade || 0} km/h<br>`;
-      conteudo += `Placa: ${v.placa || v.id}<br><br>`;
-    });
+  //   let conteudo = `<b>🚗 Veículos na área (${veiculosList.length}):</b><br><br>`;
+  //   veiculosList.forEach(v => {
+  //     conteudo += `<b>${v.nome}</b><br>`;
+  //     conteudo += `Setor: ${v.setor}<br>`;
+  //     conteudo += `Velocidade: ${v.velocidade || 0} km/h<br>`;
+  //     conteudo += `Placa: ${v.placa || v.id}<br><br>`;
+  //   });
 
-    L.popup()
-      .setLatLng([lat, lng])
-      .setContent(conteudo)
-      .openOn(mapa);
-  }
+  //   L.popup()
+  //     .setLatLng([lat, lng])
+  //     .setContent(conteudo)
+  //     .openOn(mapa);
+  // }
+  
+  // CASO EU QUEIRA SABER A DIRECAO DO ONIBUS
+  // function CursoDoOnibus(curso: number): string {
+  //   if (curso >= 0 && curso < 22.5) return "Norte";
+  //   if (curso >= 22.5 && curso < 67.5) return "Nordeste";
+  //   if (curso >= 67.5 && curso < 112.5) return "Leste";
+  //   if (curso >= 112.5 && curso < 157.5) return "Sudeste";
+  //   if (curso >= 157.5 && curso < 202.5) return "Sul";
+  //   if (curso >= 202.5 && curso < 247.5) return "Sudoeste";
+  //   if (curso >= 247.5 && curso < 292.5) return "Oeste";
+  //   if (curso >= 292.5 && curso < 337.5) return "Noroeste";
+  //   if (curso >= 337.5 && curso < 360) return "Norte";
+  //   return "Desconhecido";
+  // }
 
   //RASTRO
   function desenharRastroVeiculo(veiculoId: string, nomeVeiculo: string) {
@@ -329,9 +368,13 @@ export default function MapComponent({
       montarPopup(carro)
     );
 
-    // Adiciona evento de clique para mostrar rastro
+    // Adiciona evento de clique para mostrar rastro e informações
     novoMarcador.on("click", () => {
       desenharRastroVeiculo(carro.id, carro.nome);
+      // Chama o callback com os dados do veículo
+      if (onVeiculoSelecionado) {
+        onVeiculoSelecionado(carro);
+      }
     });
 
     marcadoresRef.current[carro.id] = novoMarcador;

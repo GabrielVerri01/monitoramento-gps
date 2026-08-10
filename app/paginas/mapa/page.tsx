@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import MapComponent,{ Veiculo } from "@/app/paginas/mapa/_components/MapComponent";
 import { useTheme } from "next-themes";
 import { FaSignOutAlt } from "react-icons/fa";
+import { HiInformationCircle } from "react-icons/hi2";
 
 const MapComponentContainer = dynamic(
   () => import("@/app/paginas/mapa/_components/MapComponent"),
@@ -14,6 +15,8 @@ const MapComponentContainer = dynamic(
 export default function MonitoramentoPage() {
   const { resolvedTheme, setTheme } = useTheme();
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
+  const [infoAberta, setInfoAberta] = useState(false);
+  const [veiculoSelecionado, setVeiculoSelecionado] = useState<Veiculo | null>(null);
 
   async function carregarDados() {
     try {
@@ -264,10 +267,81 @@ export default function MonitoramentoPage() {
 
       </aside>
 
+        <button
+        type="button"
+        className="absolute right-6 top-6 z-[1001] p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 shadow-2xl bg-white dark:bg-zinc-900"
+        onClick={() => setInfoAberta(!infoAberta)}>
+          <HiInformationCircle className="h-6 w-6 text-zinc-900 dark:text-white" />
+        </button>
+
+        <aside
+          className={`absolute right-0 top-0 z-[1002] h-[45vh] w-[min(230px,88vw)] overflow-y-auto bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white p-6 shadow-2xl transition-all duration-300 ease-in-out rounded-lg ${
+            infoAberta ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="mb-8">
+            <div className="mb-6 flex items-center justify-between">
+              <h1 className="text-2xl font-bold">
+                {veiculoSelecionado ? "Informações do Veículo" : "Informações"}
+              </h1>
+              <button
+                onClick={() => {
+                  setInfoAberta(false);
+                  setVeiculoSelecionado(null);
+                }}
+                type="button"
+                className="text-xl font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+              <section className="space-y-3">
+                {veiculoSelecionado ? (
+                  <>
+                    <div className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded-lg">
+                      <p className="text-sm font-bold text-lg mb-3">{veiculoSelecionado.nome}</p>
+                      <p className="text-sm"><strong>ID:</strong> {veiculoSelecionado.id}</p>
+                      <p className="text-sm"><strong>Setor:</strong> {veiculoSelecionado.setor}</p>
+                      <p className="text-sm"><strong>Placa:</strong> {veiculoSelecionado.placa || "N/A"}</p>
+                      <p className="text-sm"><strong>Velocidade:</strong> {veiculoSelecionado.velocidade || 0} km/h</p>
+                      <p className="text-sm"><strong>Aparelhos:</strong> {(veiculoSelecionado.aparelhos || ["GPS"]).join(", ")}</p>
+                      <p className="text-sm"><strong>Latitude:</strong> {veiculoSelecionado.lat.toFixed(4)}</p>
+                      <p className="text-sm"><strong>Longitude:</strong> {veiculoSelecionado.lng.toFixed(4)}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setVeiculoSelecionado(null);
+                      }}
+                      type="button"
+                      className="w-full mt-4 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-white px-4 py-2 rounded-md transition"
+                    >
+                      Limpar Seleção
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm">Aqui você verá as informações para contato do veículo selecionado.</p>
+                    <p className="text-sm">Use os filtros para selecionar setores e tipos de aparelhos.</p>
+                    <p className="text-sm">Clique no mapa para ver a área e verificar quais veículos estão dentro dela.</p>
+                    <p className="text-sm">Clique em um veículo dentro de um círculo de 1km para ver suas informações.</p>
+                  </>
+                )}
+              </section>
+            </div>
+          </aside>
+
       <div
         className="h-full w-full"
       >
-        <MapComponent veiculos={veiculos} setoresAtivos={setoresAtivos} aparelhosAtivos={aparelhosAtivos} />
+        <MapComponent
+          veiculos={veiculos}
+          setoresAtivos={setoresAtivos}
+          aparelhosAtivos={aparelhosAtivos}
+          onVeiculoSelecionado={(veiculo) => {
+            setVeiculoSelecionado(veiculo);
+            setInfoAberta(true);
+          }}
+        />
       </div>
     </div>
   );
