@@ -320,10 +320,10 @@ export default function MonitoramentoPage() {
                   </>
                 ) : (
                   <>
-                    <p className="text-sm">Aqui você verá as informações para contato do veículo selecionado.</p>
-                    <p className="text-sm">Use os filtros para selecionar setores e tipos de aparelhos.</p>
-                    <p className="text-sm">Clique no mapa para ver a área e verificar quais veículos estão dentro dela.</p>
-                    <p className="text-sm">Clique em um veículo dentro de um círculo de 1km para ver suas informações.</p>
+                    <p className="text-sm">Aqui você verá as informações para contato ou alerta do veículo selecionado.</p>
+                    <p className="text-sm">Caso o veículo esteja dentro da área (raio de 1km), você receberá as informações.</p>
+                    {/* <p className="text-sm">Clique no mapa para ver a área e verificar quais veículos estão dentro dela.</p>
+                    <p className="text-sm">Clique em um veículo dentro de um círculo de 1km para ver suas informações.</p> */}
                   </>
                 )}
               </section>

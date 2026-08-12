@@ -120,25 +120,6 @@ export default function MapComponent({
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(mapa);
 
-    // function montarPopupDeArea(lat: number, lng: number, veiculosDentro: Veiculo[]): string {
-    //   let conteudo = `<b>🚗 Veículos na área (${veiculosDentro.length}):</b><br><br>`;
-    //   veiculosDentro.forEach(v => {
-    //     conteudo += `<b>${v.nome}</b><br>`;
-    //     conteudo += `Setor: ${v.setor}<br>`;
-    //     conteudo += `Velocidade: ${v.velocidade || 0} km/h<br>`;
-    //     conteudo += `Placa: ${v.placa || v.id}<br><br>`;
-    //   });
-    //   return `
-    //     <main>
-    //       <div className="relative h-screen w-full overflow-hidden bg-zinc-950">
-    //         <aside className="absolute right-0 top-0 z-[1001] h-full w-[min(230px,88vw)] overflow-y-auto bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white p-6 shadow-2xl"
-    //         >
-    //           ${conteudo}
-    //         </aside>
-    //       </div>
-    //     </main>
-    //   `;
-    // }
 
     // Adiciona evento de clique no mapa para desenhar círculo em qualquer lugar
     mapa.on("click", (e: any) => {
@@ -179,19 +160,14 @@ export default function MapComponent({
   }
 
   function verificarVeiculosDentroCirculo(latCirculo: number, lngCirculo: number, raio: number, mapa: any) {
-    const veiculosDentro: any[] = [];
     const idsVerificados = new Set<string>();
 
     Object.entries(marcadoresRef.current).forEach(([id, marcador]) => {
-      const posicaoMarcador = marcador.getLatLng();
+      const posicaoMarcador = (marcador as any).getLatLng();
       const distancia = calcularDistancia(latCirculo, lngCirculo, posicaoMarcador.lat, posicaoMarcador.lng);
 
       if (distancia <= raio) {
-        const veiculo = veiculos.find(v => v.id === id);
-        if (veiculo) {
-          veiculosDentro.push(veiculo);
           idsVerificados.add(id);
-        }
       }
     });
 
@@ -199,38 +175,6 @@ export default function MapComponent({
     veiculosDentroCirculoRef.current = idsVerificados;
   }
 
-  // Mostra popup com informações dos veículos encontrados
-  // function mostrarPopupVeiculosDentro(lat: number, lng: number, veiculosList: Veiculo[], mapa: any) {
-  //   const L = Lref.current;
-  //   if (!L) return;
-
-  //   let conteudo = `<b>🚗 Veículos na área (${veiculosList.length}):</b><br><br>`;
-  //   veiculosList.forEach(v => {
-  //     conteudo += `<b>${v.nome}</b><br>`;
-  //     conteudo += `Setor: ${v.setor}<br>`;
-  //     conteudo += `Velocidade: ${v.velocidade || 0} km/h<br>`;
-  //     conteudo += `Placa: ${v.placa || v.id}<br><br>`;
-  //   });
-
-  //   L.popup()
-  //     .setLatLng([lat, lng])
-  //     .setContent(conteudo)
-  //     .openOn(mapa);
-  // }
-  
-  // CASO EU QUEIRA SABER A DIRECAO DO ONIBUS
-  // function CursoDoOnibus(curso: number): string {
-  //   if (curso >= 0 && curso < 22.5) return "Norte";
-  //   if (curso >= 22.5 && curso < 67.5) return "Nordeste";
-  //   if (curso >= 67.5 && curso < 112.5) return "Leste";
-  //   if (curso >= 112.5 && curso < 157.5) return "Sudeste";
-  //   if (curso >= 157.5 && curso < 202.5) return "Sul";
-  //   if (curso >= 202.5 && curso < 247.5) return "Sudoeste";
-  //   if (curso >= 247.5 && curso < 292.5) return "Oeste";
-  //   if (curso >= 292.5 && curso < 337.5) return "Noroeste";
-  //   if (curso >= 337.5 && curso < 360) return "Norte";
-  //   return "Desconhecido";
-  // }
 
   //RASTRO
   function desenharRastroVeiculo(veiculoId: string, nomeVeiculo: string) {
@@ -307,7 +251,7 @@ export default function MapComponent({
       mapa.removeLayer(circuloAtivoRef.current);
     }
 
-    const raio = 1000; // 1km
+    const raio = 1000; // 1km, diametro = 2km
     const novoCirculo = L.circle([lat, lng], {
       radius: raio,
       color: "#ff7800",
@@ -370,6 +314,9 @@ export default function MapComponent({
 
     // Adiciona evento de clique para mostrar rastro e informações
     novoMarcador.on("click", () => {
+      if (!veiculosDentroCirculoRef.current.has(carro.id)) {
+        return;
+      }
       desenharRastroVeiculo(carro.id, carro.nome);
       // Chama o callback com os dados do veículo
       if (onVeiculoSelecionado) {
