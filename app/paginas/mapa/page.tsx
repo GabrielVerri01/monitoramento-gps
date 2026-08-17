@@ -28,24 +28,25 @@ export default function MonitoramentoPage() {
         // Ignorar erros de GEDUC se não estiver configurado
       });
 
+      // Buscar veículos GEDUC
       const respostaVeiculos = await fetch("/api/veiculos");
       const listaVeiculos = await respostaVeiculos.json();
 
       if (!respostaVeiculos.ok) {
-        console.error("Erro ao buscar veículos:", respostaVeiculos.status, listaVeiculos);
+        console.error("Erro ao buscar veículos GEDUC:", respostaVeiculos.status, listaVeiculos);
         return;
       }
 
+      // Buscar aparelhos
       const respostaAparelhos = await fetch("/api/aparelhos");
       const listaAparelhos = await respostaAparelhos.json();
 
-      const resultado = listaVeiculos.map((veiculo: any) => {
-        // Se veículo já tem aparelhos (vindo da API GEDUC), mantém
+      // Processar veículos GEDUC
+      const veiculosGEDUC = listaVeiculos.map((veiculo: any) => {
         if (veiculo.aparelhos && veiculo.aparelhos.length > 0) {
           return veiculo;
         }
 
-        // Senão, busca na tabela de aparelhos
         const aparelhosVeiculo = listaAparelhos
           .filter((a: any) => a.veiculoId === veiculo.id)
           .map((a: any) => a.tipo);
@@ -55,6 +56,23 @@ export default function MonitoramentoPage() {
           aparelhos: aparelhosVeiculo.length > 0 ? aparelhosVeiculo : ["GPS"],
         };
       });
+
+      // Buscar veículos SEMIT (RastroSystem)
+      let veiculosSEMIT = [];
+      try {
+        const respostaSEMIT = await fetch("/api/mapa/veiculos-semit");
+        if (respostaSEMIT.ok) {
+          const dataSEMIT = await respostaSEMIT.json();
+          veiculosSEMIT = dataSEMIT.veiculos || [];
+          console.log(`[${agora}] ✅ ${veiculosSEMIT.length} veículos SEMIT carregados`);
+        }
+      } catch (erro) {
+        console.error("Erro ao carregar SEMIT:", erro);
+        // Continua sem SEMIT se não conseguir
+      }
+
+      // Combinar veículos de ambas as fontes
+      const resultado = [...veiculosGEDUC, ...veiculosSEMIT];
 
       setVeiculos(resultado);
       console.log(`[${agora}] ✅ ${resultado.length} veículos carregados (próxima atualização em 60 segundos)`);
@@ -71,45 +89,10 @@ export default function MonitoramentoPage() {
 
     return () => clearInterval(interval);
   }, []);
-    // { id: "1", nome: "Carro 1", setor: "Logistica", aparelhos: ["GPS", "RÁDIO"], lat: -23.5505, lng: -46.6333 },
-    // { id: "2", nome: "Carro 2", setor: "Logistica", aparelhos: ["GPS"], lat: -23.558, lng: -46.641 },
-    // { id: "3", nome: "Carro 3", setor: "Vendas", aparelhos: ["RÁDIO"], lat: -23.542, lng: -46.622 },
 
 
-
-  const [setoresAtivos, setSetoresAtivos] = useState<string[]>(["Logistica", "Vendas", "SEMUSC", "SEMED", "SMTT", "BLITZ", "SEMAPA", "SAMU", "GEDUC"]);
+  const [setoresAtivos, setSetoresAtivos] = useState<string[]>(["SEMUSC", "SEMED", "SMTT", "BLITZ", "SEMAPA", "SAMU", "GEDUC", "SEMIT"]);
   const [aparelhosAtivos, setAparelhosAtivos] = useState<string[]>(["GPS", "RÁDIO"]);
-  // const [sidebarAberto, setSidebarAberto] = useState(false);   sidebar abria e fechava 
-
-  // useEffect(() => {
-  //   const movimentosPorCarro: Record<string, { lat: number; lng: number }> = {
-  //     "1": { lat: 0.0003, lng: 0.0003 },
-  //     "2": { lat: -0.0002, lng: 0.00025 },
-  //     "3": { lat: 0.00025, lng: -0.0002 },
-  //     "4": { lat: -0.0003, lng: -0.0003 },
-  //     "5": { lat: 0.0002, lng: 0.0002 },
-  //     "6": { lat: -0.00025, lng: 0.0003 },
-  //     "7": { lat: 0.0003, lng: -0.00025 },
-  //     "8": { lat: -0.0002, lng: -0.0002 },
-  //     "9": { lat: 0.00025, lng: 0.00025 },
-  //   };
-
-  //   const interval = setInterval(() => {
-  //     setVeiculos((listaAntiga) =>
-  //       listaAntiga.map((carro) => {
-  //         const movimento = movimentosPorCarro[carro.id] ?? { lat: 0.0002, lng: 0.0002 };
-
-  //         return {
-  //           ...carro,
-  //           lat: carro.lat + movimento.lat,
-  //           lng: carro.lng + movimento.lng,
-  //         };
-  //       })
-  //     );
-  //   }, 2000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
 
   const handleCheckboxChange = (setor: string) => {
     setSetoresAtivos((antigos) =>
@@ -153,24 +136,6 @@ export default function MonitoramentoPage() {
               Setores
             </h2>
             <div className="space-y-3">
-              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 accent-zinc-900"
-                  checked={setoresAtivos.includes("Logistica")}
-                  onChange={() => handleCheckboxChange("Logistica")}
-                />
-                <span className="text-sm font-medium">Logistica</span>
-              </label>
-              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 accent-zinc-900"
-                  checked={setoresAtivos.includes("Vendas")}
-                  onChange={() => handleCheckboxChange("Vendas")}
-                />
-                <span className="text-sm font-medium">Vendas</span>
-              </label>
               <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
                 <input
                   type="checkbox"
@@ -233,6 +198,15 @@ export default function MonitoramentoPage() {
                   onChange={() => handleCheckboxChange("GEDUC")}
                 />
                 <span className="text-sm font-medium">GEDUC (Transporte Escolar)</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-zinc-900"
+                  checked={setoresAtivos.includes("SEMIT")}
+                  onChange={() => handleCheckboxChange("SEMIT")}
+                />
+                <span className="text-sm font-medium">SEMIT (Integração RastroSystem)</span>
               </label>
             </div>
           </section>
@@ -322,8 +296,6 @@ export default function MonitoramentoPage() {
                   <>
                     <p className="text-sm">Aqui você verá as informações para contato ou alerta do veículo selecionado.</p>
                     <p className="text-sm">Caso o veículo esteja dentro da área (raio de 1km), você receberá as informações.</p>
-                    {/* <p className="text-sm">Clique no mapa para ver a área e verificar quais veículos estão dentro dela.</p>
-                    <p className="text-sm">Clique em um veículo dentro de um círculo de 1km para ver suas informações.</p> */}
                   </>
                 )}
               </section>
