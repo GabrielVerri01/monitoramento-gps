@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import "leaflet/dist/leaflet.css";
 
 export interface Veiculo {
@@ -96,12 +96,13 @@ function montarPopup(carro: Veiculo): string {
     // CASO EU QUEIRA A DIRECAO devo adiconar <br>${curso} 
 }
 
-export default function MapComponent({
-  veiculos,
-  setoresAtivos,
-  aparelhosAtivos,
-  onVeiculoSelecionado,
-}: MapComponentProps) {
+const MapComponent = forwardRef<any, MapComponentProps>(
+  ({
+    veiculos,
+    setoresAtivos,
+    aparelhosAtivos,
+    onVeiculoSelecionado,
+  }: MapComponentProps, ref) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any | null>(null);
   const marcadoresRef = useRef<{ [id: string]: any }>({});
@@ -146,6 +147,16 @@ export default function MapComponent({
       leafletMapRef.current = null;
     };
   }, [Lref]);
+
+  useImperativeHandle(ref, () => ({
+    centralizarEDesenharCirculo: (lat: number, lng: number) => { //centraliza carro pesquisado e desenha circulo
+      const mapa = leafletMapRef.current;
+      if (!mapa) return;
+
+      mapa.setView([lat, lng], 15);
+      desenharCirculo(lat, lng, mapa);
+    }
+  }));
 
   // Sincroniza camadas por setor (mostra/esconde conforme filtro)
   function sincronizarCamadasDeSetor(mapa: any) {
@@ -381,4 +392,8 @@ export default function MapComponent({
   }, [veiculos, setoresAtivos, aparelhosAtivos]);
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
-}
+  }
+);
+
+MapComponent.displayName = "MapComponent";
+export default MapComponent;

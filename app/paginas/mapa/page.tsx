@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import MapComponent,{ Veiculo } from "@/app/paginas/mapa/_components/MapComponent";
 import { useTheme } from "next-themes";
 import { FaSignOutAlt } from "react-icons/fa";
-import { HiInformationCircle } from "react-icons/hi2";
+import { HiInformationCircle, HiMagnifyingGlass } from "react-icons/hi2";
 
 const MapComponentContainer = dynamic(
   () => import("@/app/paginas/mapa/_components/MapComponent"),
@@ -17,6 +17,10 @@ export default function MonitoramentoPage() {
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [infoAberta, setInfoAberta] = useState(false);
   const [veiculoSelecionado, setVeiculoSelecionado] = useState<Veiculo | null>(null);
+  const [pesquisaAberta, setPesquisaAberta] = useState(false);
+  const [termoPesquisa, setTermoPesquisa] = useState("");
+  const [resultadosPesquisa, setResultadosPesquisa] = useState<Veiculo[]>([]);
+  const mapRef = useRef<any>(null);
 
   async function carregarDados() {
     try {
@@ -111,6 +115,36 @@ export default function MonitoramentoPage() {
     );
   };
 
+  //pesquisa de carro por placa/codigo
+  const buscarVeiculo = (termo: string) => {
+    setTermoPesquisa(termo);
+    if (termo.trim() === "") {
+      setResultadosPesquisa([]);
+      return;
+    }
+
+    const termoLower = termo.toLowerCase();
+    const resultados = veiculos.filter((v) =>
+      (v.placa && v.placa.toLowerCase().includes(termoLower)) ||
+      v.id.toLowerCase().includes(termoLower) ||
+      v.nome.toLowerCase().includes(termoLower)
+    );
+    setResultadosPesquisa(resultados);
+  };
+
+  const selecionarVeiculoDaBusca = (veiculo: Veiculo) => {
+    setVeiculoSelecionado(veiculo);
+    setInfoAberta(true);
+    setPesquisaAberta(false);
+    setTermoPesquisa("");
+    setResultadosPesquisa([]);
+
+    // Centralizar mapa e desenhar círculo ao redor do veículo
+    if (mapRef.current?.centralizarEDesenharCirculo) {
+      mapRef.current.centralizarEDesenharCirculo(veiculo.lat, veiculo.lng);
+    }
+  };
+
   function handleLogout(){
     console.log(`usuario: ${localStorage.getItem("usuario")}`);
     localStorage.removeItem("usuario");
@@ -145,7 +179,7 @@ export default function MonitoramentoPage() {
                 />
                 <span className="text-sm font-medium">SEMUSC</span>
               </label>
-              <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+              {/* <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
                 <input
                   type="checkbox"
                   className="h-4 w-4 accent-zinc-900"
@@ -153,7 +187,7 @@ export default function MonitoramentoPage() {
                   onChange={() => handleCheckboxChange("SEMED")}
                 />
                 <span className="text-sm font-medium">SEMED</span>
-              </label>
+              </label> */}
               <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
                 <input
                   type="checkbox"
@@ -197,7 +231,7 @@ export default function MonitoramentoPage() {
                   checked={setoresAtivos.includes("GEDUC")}
                   onChange={() => handleCheckboxChange("GEDUC")}
                 />
-                <span className="text-sm font-medium">GEDUC (Transporte Escolar)</span>
+                <span className="text-sm font-medium">SEMED (GEDUC)</span>
               </label>
               <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
                 <input
@@ -246,6 +280,13 @@ export default function MonitoramentoPage() {
         className="absolute right-6 top-6 z-[1001] p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 shadow-2xl bg-white dark:bg-zinc-900"
         onClick={() => setInfoAberta(!infoAberta)}>
           <HiInformationCircle className="h-6 w-6 text-zinc-900 dark:text-white" />
+        </button>
+
+        <button
+        type="button"
+        className="absolute right-6 top-20 z-[1001] p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 shadow-2xl bg-white dark:bg-zinc-900"
+        onClick={() => setPesquisaAberta(!pesquisaAberta)}>
+          <HiMagnifyingGlass className="h-6 w-6 text-zinc-900 dark:text-white" />
         </button>
 
         <aside
@@ -302,10 +343,69 @@ export default function MonitoramentoPage() {
             </div>
           </aside>
 
+      <aside
+          className={`absolute right-0 top-0 z-[1002] h-screen w-[min(350px,88vw)] overflow-y-auto bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white p-6 shadow-2xl transition-all duration-300 ease-in-out rounded-lg ${
+            pesquisaAberta ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="mb-8">
+            <div className="mb-6 flex items-center justify-between">
+              <h1 className="text-2xl font-bold">Buscar Veículo</h1>
+              <button
+                onClick={() => {
+                  setPesquisaAberta(false);
+                  setTermoPesquisa("");
+                  setResultadosPesquisa([]);
+                }}
+                type="button"
+                className="text-xl font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Buscar por placa ou código..."
+                className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={termoPesquisa}
+                onChange={(e) => buscarVeiculo(e.target.value)}
+              />
+            </div>
+
+            {resultadosPesquisa.length > 0 ? (
+              <div className="space-y-2">
+                {resultadosPesquisa.map((veiculo) => (
+                  <button
+                    key={veiculo.id}
+                    onClick={() => selecionarVeiculoDaBusca(veiculo)}
+                    className="w-full text-left bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 p-4 rounded-lg transition cursor-pointer"
+                  >
+                    <p className="font-semibold text-sm">{veiculo.nome}</p>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400">Placa: {veiculo.placa || "N/A"}</p>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400">ID: {veiculo.id}</p>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400">Setor: {veiculo.setor}</p>
+                  </button>
+                ))}
+              </div>
+            ) : termoPesquisa.trim() !== "" ? (
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center py-8">
+                Nenhum veículo encontrado
+              </p>
+            ) : (
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center py-8">
+                Digite a placa ou código do veículo para buscar
+              </p>
+            )}
+          </div>
+        </aside>
+
       <div
         className="h-full w-full"
       >
         <MapComponent
+          ref={mapRef}
           veiculos={veiculos}
           setoresAtivos={setoresAtivos}
           aparelhosAtivos={aparelhosAtivos}
