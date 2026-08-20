@@ -75,8 +75,22 @@ export default function MonitoramentoPage() {
         // Continua sem SEMIT se não conseguir
       }
 
-      // Combinar veículos de ambas as fontes
-      const resultado = [...veiculosGEDUC, ...veiculosSEMIT];
+      // Buscar veículos SMTT (Autovision)
+      let veiculosSMTT = [];
+      try {
+        const respostaSMTT = await fetch("/api/smtt/telemetria");
+        if (respostaSMTT.ok) {
+          const dataSMTT = await respostaSMTT.json();
+          veiculosSMTT = dataSMTT.veiculos || [];
+          console.log(`[${agora}] ✅ ${veiculosSMTT.length} veículos SMTT carregados`);
+        }
+      } catch (erro) {
+        console.error("Erro ao carregar SMTT:", erro);
+        // Continua sem SMTT se não conseguir
+      }
+
+      // Combinar veículos de todas as fontes
+      const resultado = [...veiculosGEDUC, ...veiculosSEMIT, ...veiculosSMTT];
 
       setVeiculos(resultado);
       console.log(`[${agora}] ✅ ${resultado.length} veículos carregados (próxima atualização em 60 segundos)`);

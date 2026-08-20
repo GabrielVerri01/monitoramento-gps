@@ -16,6 +16,12 @@ model Usuario {
   id        Int      @id @default(autoincrement())
   usuario   String   @unique
   email     String   @unique
-  senha     String 
+  senha     String
   createdAt DateTime @default(now())
+}
+
+model SMTTCursor {
+  id            String   @id @default("smtt_default")
+  updatedSince  String?
+  lastUpdate    DateTime @default(now()) @updatedAt
 }

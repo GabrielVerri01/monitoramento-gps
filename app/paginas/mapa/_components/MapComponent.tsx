@@ -12,6 +12,7 @@ export interface Veiculo {
   placa?: string;
   lat: number;
   lng: number;
+  tipo?: "MOTO" | "CARRO"; // Novo campo
 }
 
 interface MapComponentProps {
@@ -62,9 +63,13 @@ function gerarIconeSimples(cor: string, simbolo: string): string {
 }
 
 function gerarIconePorSetor(setor: string, cor: string): string {
-  // GEDUC usa onibus feito no figma 
+  // GEDUC usa onibus feito no figma
   if (setor === "GEDUC") {
     return gerarIconeOnibus(cor);
+  }
+  // SMTT usa ícone SMTT
+  if (setor === "SMTT") {
+    return gerarIconeSMTT(cor);
   }
   // por enquanto icone simples para outros setores
   return gerarIconeSimples(cor, setor);
@@ -85,6 +90,7 @@ function montarPopup(carro: Veiculo): string {
   const aparelhos = (carro.aparelhos || ["GPS"]).join(", ");
   const velocidade = carro.velocidade || 0;
   const placa = carro.placa || carro.id;
+  const tipo = carro.tipo || "CARRO";
   // const curso = carro.curso !== undefined ? `Curso: ${carro.curso}°` : "Curso: N/A";  CASO EU QUEIRA A DIRECAO
 
   return `<b>${carro.nome}</b>
@@ -92,6 +98,7 @@ function montarPopup(carro: Veiculo): string {
     <br>Aparelhos: ${aparelhos}
     <br>Velocidade: ${velocidade} km/h
     <br>Placa: ${placa}
+    <br>Tipo: ${tipo}
     `;
     // CASO EU QUEIRA A DIRECAO devo adiconar <br>${curso} 
 }
@@ -318,9 +325,9 @@ const MapComponent = forwardRef<any, MapComponentProps>(
     const cor = CORES_SETORES[carro.setor] || "#3B82F6";
     const icone = L.icon({
       iconUrl: gerarIconePorSetor(carro.setor, cor),
-      iconSize: carro.setor === "GEDUC" ? [24, 18] : [20, 28],
-      iconAnchor: carro.setor === "GEDUC" ? [12, 18] : [10, 28],
-      popupAnchor: [0, carro.setor === "GEDUC" ? -18 : -28],
+      iconSize: (carro.setor === "GEDUC" || carro.setor === "SMTT") ? [24, 18] : [20, 28],
+      iconAnchor: (carro.setor === "GEDUC" || carro.setor === "SMTT") ? [12, 18] : [10, 28],
+      popupAnchor: [0, (carro.setor === "GEDUC" || carro.setor === "SMTT") ? -18 : -28],
     });
 
     if (marcadorExistente) {
