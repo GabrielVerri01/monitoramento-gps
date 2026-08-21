@@ -90,11 +90,11 @@ export async function GET(request: NextRequest) {
     const positions = Array.isArray(data) ? data : (data.data?.positions || []);
 
     // Log dos campos para debug
-    if (positions.length > 0) {
-      console.log("=== CAMPOS DA API SMTT ===");
-      console.log("Todos os campos do primeiro veículo:", Object.keys(positions[0]));
-      console.log("Primeiro veículo completo:", positions[0]);
-    }
+    // if (positions.length > 0) {
+    //   console.log("=== CAMPOS DA API SMTT ===");
+    //   console.log("Todos os campos do primeiro veículo:", Object.keys(positions[0]));
+    //   console.log("Primeiro veículo completo:", positions[0]);
+    // }
 
     // Atualiza o cursor com a data/hora mais recente
     if (positions.length > 0) {

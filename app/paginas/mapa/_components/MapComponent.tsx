@@ -56,13 +56,21 @@ function gerarIconeSEMIT(cor: string): string {
   return `data:image/svg+xml,<svg width='80' height='48' viewBox='0 0 680 360' xmlns='http://www.w3.org/2000/svg'><path d='M195 250 L195 210 Q195 195 210 190 L255 175 Q265 155 285 155 L400 155 Q420 155 430 175 L470 190 Q485 195 485 210 L485 250 Z' fill='%232456a6' stroke='%231a3f80' stroke-width='1.5'/><rect x='195' y='200' width='290' height='8' fill='%232ecc71'/><rect x='195' y='208' width='290' height='8' fill='%23ffd166'/><path d='M262 178 L282 160 L400 160 L416 178 Z' fill='%23a8d8ef' stroke='%238cc4e0' stroke-width='1'/><line x1='340' y1='160' x2='340' y2='178' stroke='%238cc4e0' stroke-width='1.5'/><text x='340' y='233' text-anchor='middle' font-size='18' font-weight='500' font-family='Arial, sans-serif' fill='%23ffffff'>SEMIT</text><circle cx='480' cy='222' r='6' fill='%23ffd166'/><rect x='185' y='245' width='310' height='10' rx='4' fill='%231a3f80'/><circle cx='250' cy='260' r='26' fill='%23111111'/><circle cx='250' cy='260' r='10' fill='%236b6b6b'/><circle cx='450' cy='260' r='26' fill='%23111111'/><circle cx='450' cy='260' r='10' fill='%236b6b6b'/></svg>`
 }
 
+function gerarIconeMotoSMTT(): string {
+  return `data:image/svg+xml,<svg width='80' height='48' viewBox='0 0 680 360' xmlns='http://www.w3.org/2000/svg'><path d='M245 230 Q300 250 400 235 L410 235 Q460 240 480 232' stroke='%232b2d30' stroke-width='9' fill='none' stroke-linecap='round'/><path d='M270 190 Q290 168 335 168 L385 172 Q405 175 400 195 L448 214 L390 214 L275 210 Z' fill='%234a4e54' stroke='%232b2d30' stroke-width='2'/><path d='M285 185 L370 182' stroke='%233d8bef' stroke-width='5' stroke-linecap='round'/><path d='M240 190 L215 170 M240 190 L262 172 M240 190 L210 250' stroke='%232b2d30' stroke-width='7' stroke-linecap='round'/><circle cx='212' cy='167' r='8' fill='%231c1c1c'/><circle cx='243' cy='195' r='11' fill='%23ffd166' stroke='%23e0a800' stroke-width='1'/><circle cx='470' cy='255' r='42' fill='%23111'/><circle cx='470' cy='255' r='17' fill='%235a5a5a'/><circle cx='210' cy='255' r='42' fill='%23111'/><circle cx='210' cy='255' r='17' fill='%235a5a5a'/></svg>`
+}
+
 function gerarIconeSimples(cor: string, simbolo: string): string {
   const corSemHash = cor.replace("#", "");
   // Icone simples e genérico para outros setores
   return `data:image/svg+xml,%3Csvg width='20' height='30' viewBox='0 0 30 40' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='26' height='26' rx='4' fill='%23${corSemHash}'/%3E%3Ccircle cx='15' cy='15' r='5' fill='%23000000'/%3E%3Crect x='10' y='30' width='10' height='8' fill='%23000000'/%3E%3C/svg%3E`;
 }
 
-function gerarIconePorSetor(setor: string, cor: string): string {
+function gerarIconePorSetor(setor: string, cor: string, tipo?: string): string {
+  // MOTO usa ícone de moto
+  if (tipo === "MOTO") {
+    return gerarIconeMotoSMTT();
+  }
   // GEDUC usa onibus feito no figma
   if (setor === "GEDUC") {
     return gerarIconeOnibus(cor);
@@ -323,11 +331,30 @@ const MapComponent = forwardRef<any, MapComponentProps>(
     const marcadorExistente = marcadoresRef.current[carro.id];
 
     const cor = CORES_SETORES[carro.setor] || "#3B82F6";
+
+    let iconSize: [number, number];
+    let iconAnchor: [number, number];
+    let popupAnchor: [number, number];
+
+    if (carro.setor === "GEDUC") {
+      iconSize = [22, 16];
+      iconAnchor = [11, 16];
+      popupAnchor = [0, -16];
+    } else if (carro.setor === "SMTT" || carro.tipo === "MOTO") {
+      iconSize = [28, 21];
+      iconAnchor = [14, 21];
+      popupAnchor = [0, -21];
+    } else {
+      iconSize = [20, 28];
+      iconAnchor = [10, 28];
+      popupAnchor = [0, -28];
+    }
+
     const icone = L.icon({
-      iconUrl: gerarIconePorSetor(carro.setor, cor),
-      iconSize: (carro.setor === "GEDUC" || carro.setor === "SMTT") ? [24, 18] : [20, 28],
-      iconAnchor: (carro.setor === "GEDUC" || carro.setor === "SMTT") ? [12, 18] : [10, 28],
-      popupAnchor: [0, (carro.setor === "GEDUC" || carro.setor === "SMTT") ? -18 : -28],
+      iconUrl: gerarIconePorSetor(carro.setor, cor, carro.tipo),
+      iconSize,
+      iconAnchor,
+      popupAnchor,
     });
 
     if (marcadorExistente) {
