@@ -103,7 +103,7 @@ export default function MonitoramentoPage() {
     carregarDados();
 
     // intervalo de 30 a 60(recomendado) segundos para atualizacao
-    const interval = setInterval(carregarDados, 20000); //mudei para 20 segundos 
+    const interval = setInterval(carregarDados, 30000); //mudei para 30 segundos 
 
     return () => clearInterval(interval);
   }, []);
