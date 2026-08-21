@@ -19,6 +19,8 @@ interface MapComponentProps {
   veiculos: Veiculo[];
   setoresAtivos: string[];
   aparelhosAtivos: string[];
+  tiposAtivos?: string[];
+  veiculosDesabilitados?: Set<string>;
   onVeiculoSelecionado?: (veiculo: Veiculo) => void;
 }
 
@@ -86,12 +88,19 @@ function gerarIconePorSetor(setor: string, cor: string, tipo?: string): string {
 function veiculoDeveAparecer(
   carro: Veiculo,
   setoresAtivos: string[],
-  aparelhosAtivos: string[]
+  aparelhosAtivos: string[],
+  tiposAtivos?: string[],
+  veiculosDesabilitados?: string[]//Set<string>
 ): boolean {
+  if (veiculosDesabilitados?.includes(carro.id)) {
+    return false;
+  }
   const setorAtivo = setoresAtivos.includes(carro.setor);
   const aparelhos = carro.aparelhos || ["GPS"];
   const aparelhoAtivo = aparelhos.some((a) => aparelhosAtivos.includes(a));
-  return setorAtivo && aparelhoAtivo;
+  const tiposAtivosDefault = tiposAtivos || ["CARRO", "MOTO"];
+  const tipoAtivo = tiposAtivosDefault.includes(carro.tipo || "CARRO");
+  return setorAtivo && aparelhoAtivo && tipoAtivo;
 }
 
 function montarPopup(carro: Veiculo): string {
@@ -116,6 +125,8 @@ const MapComponent = forwardRef<any, MapComponentProps>(
     veiculos,
     setoresAtivos,
     aparelhosAtivos,
+    tiposAtivos,
+    veiculosDesabilitados,
     onVeiculoSelecionado,
   }: MapComponentProps, ref) => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -407,7 +418,7 @@ const MapComponent = forwardRef<any, MapComponentProps>(
     removerVeiculosObsoletos(veiculos);
 
     veiculos.forEach((carro) => {
-      const deveMostrar = veiculoDeveAparecer(carro, setoresAtivos, aparelhosAtivos);
+      const deveMostrar = veiculoDeveAparecer(carro, setoresAtivos, aparelhosAtivos, tiposAtivos, veiculosDesabilitados);
       const marcador = marcadoresRef.current[carro.id];
       const camada = camadasRef.current[carro.setor];
 
@@ -423,7 +434,7 @@ const MapComponent = forwardRef<any, MapComponentProps>(
 
     // Atualiza o rastro ativo se houver um veículo selecionado
     atualizarRastroAtivo();
-  }, [veiculos, setoresAtivos, aparelhosAtivos]);
+  }, [veiculos, setoresAtivos, aparelhosAtivos, tiposAtivos, veiculosDesabilitados]);
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
   }

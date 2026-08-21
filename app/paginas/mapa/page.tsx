@@ -111,6 +111,10 @@ export default function MonitoramentoPage() {
 
   const [setoresAtivos, setSetoresAtivos] = useState<string[]>(["SEMUSC", "SEMED", "SMTT", "BLITZ", "SEMAPA", "SAMU", "GEDUC", "SEMIT"]);
   const [aparelhosAtivos, setAparelhosAtivos] = useState<string[]>(["GPS", "RÁDIO"]);
+  const [tiposAtivos, setTiposAtivos] = useState<string[]>(["CARRO", "MOTO"]);
+  const [expandidoCarros, setExpandidoCarros] = useState(false);
+  const [expandidoMotos, setExpandidoMotos] = useState(false);
+  const [veiculosDesabilitados, setVeiculosDesabilitados] = useState<string[]>([]);
 
   const handleCheckboxChange = (setor: string) => {
     setSetoresAtivos((antigos) =>
@@ -126,6 +130,23 @@ export default function MonitoramentoPage() {
       antigos.includes(aparelho)
         ? antigos.filter((a) => a !== aparelho) //remove o filtro se estiver ativo
         : [...antigos, aparelho]  //adiciona se nao estiver ativo
+    );
+  };
+
+  //tipo de veiculo
+  const handleTipoCheckboxChange = (tipo: string) => {
+    setTiposAtivos((antigos) =>
+      antigos.includes(tipo)
+        ? antigos.filter((t) => t !== tipo) //remove o filtro se estiver ativo
+        : [...antigos, tipo]  //adiciona se nao estiver ativo
+    );
+  };
+
+  const handleVeiculoToggle = (veiculoId: string) => {
+    setVeiculosDesabilitados((antigos) =>
+      antigos.includes(veiculoId)
+        ? antigos.filter(id => id !== veiculoId)
+        : [...antigos, veiculoId]
     );
   };
 
@@ -193,15 +214,6 @@ export default function MonitoramentoPage() {
                 />
                 <span className="text-sm font-medium">SEMUSC</span>
               </label>
-              {/* <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 accent-zinc-900"
-                  checked={setoresAtivos.includes("SEMED")}
-                  onChange={() => handleCheckboxChange("SEMED")}
-                />
-                <span className="text-sm font-medium">SEMED</span>
-              </label> */}
               <label className="flex cursor-pointer items-center gap-3 rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
                 <input
                   type="checkbox"
@@ -256,6 +268,86 @@ export default function MonitoramentoPage() {
                 />
                 <span className="text-sm font-medium">SEMIT (Integração RastroSystem)</span>
               </label>
+            </div>
+          </section>
+          <section className="mt-6">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+              VEÍCULOS
+            </h2>
+            <div className="space-y-3">
+              <div className="rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <button
+                  onClick={() => setExpandidoCarros(!expandidoCarros)}
+                  className="flex w-full cursor-pointer items-center gap-3"
+                >
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-zinc-900"
+                    checked={tiposAtivos.includes("CARRO")}
+                    onChange={() => handleTipoCheckboxChange("CARRO")}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <span className="text-sm font-medium flex-1">CARROS</span>
+                  <span className="text-xs text-zinc-500">
+                    {veiculos.filter(v => v.tipo === "CARRO" || !v.tipo).length}
+                  </span>
+                  <span className="text-xs">
+                    {expandidoCarros ? "▼" : "▶"}
+                  </span>
+                </button>
+                {expandidoCarros && (
+                  <div className="mt-3 ml-4 space-y-2 border-l-2 border-zinc-200 pl-3">
+                    {veiculos.filter(v => v.tipo === "CARRO" || !v.tipo).map((veiculo) => (
+                      <label key={veiculo.id} className="flex items-center gap-2 cursor-pointer text-xs">
+                        <input
+                          type="checkbox"
+                          className="h-3 w-3 accent-zinc-900"
+                          checked={!veiculosDesabilitados?.includes(veiculo.id)}
+                          onChange={() => handleVeiculoToggle(veiculo.id)}
+                        />
+                        <span className="truncate">{veiculo.nome}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-md border border-zinc-200 px-3 py-3 transition hover:bg-zinc-50">
+                <button
+                  onClick={() => setExpandidoMotos(!expandidoMotos)}
+                  className="flex w-full cursor-pointer items-center gap-3"
+                >
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 accent-zinc-900"
+                    checked={tiposAtivos.includes("MOTO")}
+                    onChange={() => handleTipoCheckboxChange("MOTO")}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <span className="text-sm font-medium flex-1">MOTOS</span>
+                  <span className="text-xs text-zinc-500">
+                    {veiculos.filter(v => v.tipo === "MOTO").length}
+                  </span>
+                  <span className="text-xs">
+                    {expandidoMotos ? "▼" : "▶"}
+                  </span>
+                </button>
+                {expandidoMotos && (
+                  <div className="mt-3 ml-4 space-y-2 border-l-2 border-zinc-200 pl-3">
+                    {veiculos.filter(v => v.tipo === "MOTO").map((veiculo) => (
+                      <label key={veiculo.id} className="flex items-center gap-2 cursor-pointer text-xs">
+                        <input
+                          type="checkbox"
+                          className="h-3 w-3 accent-zinc-900"
+                          checked={!veiculosDesabilitados?.includes(veiculo.id)}
+                          onChange={() => handleVeiculoToggle(veiculo.id)}
+                        />
+                        <span className="truncate">{veiculo.nome}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </section>
           <section className="mt-6">
@@ -423,6 +515,8 @@ export default function MonitoramentoPage() {
           veiculos={veiculos}
           setoresAtivos={setoresAtivos}
           aparelhosAtivos={aparelhosAtivos}
+          tiposAtivos={tiposAtivos}
+          veiculosDesabilitados={veiculosDesabilitados}
           onVeiculoSelecionado={(veiculo) => {
             setVeiculoSelecionado(veiculo);
             setInfoAberta(true);
