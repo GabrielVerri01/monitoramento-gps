@@ -30,10 +30,15 @@ export default function LoginPage(){
         body: JSON.stringify({ usuario, senha }),
       });
 
-      const data = await response.json();
+      const textoResposta = await response.text();
+      let data: { error?: string } = {};
+      try {
+        data = textoResposta ? JSON.parse(textoResposta) : {};
+      } catch {
+        data = {};
+      }
 
       if (response.ok) {
-        localStorage.setItem("usuario", data.usuario);
         alert("Login realizado com sucesso!");
         router.push("/paginas/mapa");
       } else {

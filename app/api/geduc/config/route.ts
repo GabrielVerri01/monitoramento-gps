@@ -6,15 +6,6 @@ export async function GET() {
 
   return NextResponse.json({
     configurado: !!(GEDUC_API_KEY && GEDUC_TENANT_ID),
-    tenantId: GEDUC_TENANT_ID || "NÃO CONFIGURADO",
-    apiKey: GEDUC_API_KEY
-      ? `${GEDUC_API_KEY.substring(0, 10)}...***`
-      : "NÃO CONFIGURADO",
-    mensagem:
-      "Configure GEDUC_API_KEY e GEDUC_TENANT_ID no arquivo .env.local",
-    exemplo: {
-      GEDUC_API_KEY: "seu_token_aqui",
-      GEDUC_TENANT_ID: "2111300",
-    },
+    mensagem: "Configuração GEDUC disponível no servidor",
   });
 }

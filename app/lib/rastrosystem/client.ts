@@ -20,9 +20,6 @@ async function autenticar(): Promise<AuthTokenResponse> {
   const url = `${baseUrl}${RASTROSYSTEM_CONFIG.endpoints.oauth}`;
 
   console.log(`[AUTH] Autenticando em ${url}`);
-  console.log(`[AUTH] Username: ${auth.username}`);
-  console.log(`[AUTH] Password: ${auth.password ? "***" : "VAZIO"}`);
-  console.log(`[AUTH] Body: ${params.toString()}`);
 
   const response = await fetch(url, {
     method: "POST",
@@ -33,11 +30,9 @@ async function autenticar(): Promise<AuthTokenResponse> {
   });
 
   if (!response.ok) {
-    const error = await response.text();
     console.error(`[AUTH] Erro: ${response.status}`);
-    console.error(`[AUTH] Resposta da API: ${error}`);
     throw new Error(
-      `Falha ao autenticar com RastroSystem: ${response.status} ${response.statusText} - ${error}`
+      `Falha ao autenticar com RastroSystem: ${response.status} ${response.statusText}`
     );
   }
 
@@ -124,9 +119,11 @@ export async function fazerRequisicao(
   endpoint: string,
   opcoes?: {
     body?: unknown;
-    queryParams?: Record<string, any>;
+    queryParams?: object;
     headers?: Record<string, string>;
   }
+// O cliente aceita vários formatos de resposta definidos pela API externa.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const { baseUrl } = RASTROSYSTEM_CONFIG;
   const token = await obterToken();

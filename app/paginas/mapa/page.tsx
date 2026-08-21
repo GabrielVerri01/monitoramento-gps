@@ -114,7 +114,7 @@ export default function MonitoramentoPage() {
   const [tiposAtivos, setTiposAtivos] = useState<string[]>(["CARRO", "MOTO"]);
   const [expandidoCarros, setExpandidoCarros] = useState(false);
   const [expandidoMotos, setExpandidoMotos] = useState(false);
-  const [veiculosDesabilitados, setVeiculosDesabilitados] = useState<string[]>([]);
+  const [veiculosDesabilitados, setVeiculosDesabilitados] = useState<Set<string>>(new Set());
 
   const handleCheckboxChange = (setor: string) => {
     setSetoresAtivos((antigos) =>
@@ -143,11 +143,15 @@ export default function MonitoramentoPage() {
   };
 
   const handleVeiculoToggle = (veiculoId: string) => {
-    setVeiculosDesabilitados((antigos) =>
-      antigos.includes(veiculoId)
-        ? antigos.filter(id => id !== veiculoId)
-        : [...antigos, veiculoId]
-    );
+    setVeiculosDesabilitados((antigos) => {
+      const atualizados = new Set(antigos);
+      if (atualizados.has(veiculoId)) {
+        atualizados.delete(veiculoId);
+      } else {
+        atualizados.add(veiculoId);
+      }
+      return atualizados;
+    });
   };
 
   //pesquisa de carro por placa/codigo
@@ -181,9 +185,10 @@ export default function MonitoramentoPage() {
   };
 
   function handleLogout(){
-    console.log(`usuario: ${localStorage.getItem("usuario")}`);
-    localStorage.removeItem("usuario");
-    window.location.href = "/";
+    fetch("/api/logout", { method: "POST" })
+      .finally(() => {
+        window.location.href = "/";
+      });
   }
   
   return (
@@ -302,7 +307,7 @@ export default function MonitoramentoPage() {
                         <input
                           type="checkbox"
                           className="h-3 w-3 accent-zinc-900"
-                          checked={!veiculosDesabilitados?.includes(veiculo.id)}
+                          checked={!veiculosDesabilitados?.has(veiculo.id)}
                           onChange={() => handleVeiculoToggle(veiculo.id)}
                         />
                         <span className="truncate">{veiculo.nome}</span>
@@ -339,7 +344,7 @@ export default function MonitoramentoPage() {
                         <input
                           type="checkbox"
                           className="h-3 w-3 accent-zinc-900"
-                          checked={!veiculosDesabilitados?.includes(veiculo.id)}
+                          checked={!veiculosDesabilitados?.has(veiculo.id)}
                           onChange={() => handleVeiculoToggle(veiculo.id)}
                         />
                         <span className="truncate">{veiculo.nome}</span>

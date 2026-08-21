@@ -90,9 +90,9 @@ function veiculoDeveAparecer(
   setoresAtivos: string[],
   aparelhosAtivos: string[],
   tiposAtivos?: string[],
-  veiculosDesabilitados?: string[]//Set<string>
+  veiculosDesabilitados?: Set<string>
 ): boolean {
-  if (veiculosDesabilitados?.includes(carro.id)) {
+  if (veiculosDesabilitados?.has(carro.id)) {
     return false;
   }
   const setorAtivo = setoresAtivos.includes(carro.setor);
